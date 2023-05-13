@@ -8,8 +8,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "flowbite": "^1.6.5",
-    "flowbite-vue": "^0.0.10",
     "papaparse": "^5.4.1",
     "pinia": "^2.0.36",
     "vue": "^3.3.2"
