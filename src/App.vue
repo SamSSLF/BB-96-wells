@@ -1,5 +1,8 @@
 <template>
+  <!-- Construct the layout using CSS Grid. Two columns, the left panel is 250 px and the left is whatever's left -->
   <div class="grid grid-cols-[250px_1fr] gap-x-4 w-screen items-center">
+
+    <!-- Left Sample Panel -->
     <div class="col-span-1 text-black h-screen overflow-auto">
       <ul>
         <li
@@ -16,10 +19,14 @@
         </li>
       </ul>
     </div>
+
+    <!-- Right panel with the virtual well plate -->
     <div class="col-span-1 col-start-2 overflow-auto mx-auto">
       <div class="flex w-full justify-center mb-8">
         <p class="">{{ selectedSample }}</p>
       </div>
+
+      <!-- The virtual well plate was constructed using an HTML Table -->
       <table
         class="table-fixed text-sm text-gray-500 dark:text-gray-400 text-ellipsis w-5 h-5 overflow-hidden whitespace-nowrap text-center"
       >
@@ -49,7 +56,8 @@
               scope="row"
               class="font-medium text-gray-900 whitespace-nowrap dark:text-white text-ellipsis w-24 h-5 overflow-hidden"
             >
-              {{ String.fromCharCode("A".charCodeAt(0) + rowIndex) }}
+              <!-- Convert row index from numbers to letters -->
+              {{ String.fromCharCode("A".charCodeAt(0) + rowIndex) }} 
             </th>
             <td
               v-for="(cell, cellIndex) in row"
@@ -66,13 +74,13 @@
         </tbody>
       </table>
     </div>
+
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import Papa from "papaparse";
-// import { initFlowbite } from "flowbite";
 
 const tableRows = ref([]);
 const tableHeaders = ref([]);
@@ -85,13 +93,12 @@ function selectSample(sample) {
 
 // initialize components based on data attribute selectors
 onMounted(() => {
-  // initFlowbite(); // make flowbite components interactive
   console.log(`the component is now mounted.`);
   Papa.parse("./src/assets/nn_plate_layout.csv", {
     download: true,
     header: true,
     complete: (results) => {
-      // console.log(results.data);
+      // console.log(results.data); //debugging
       const dataMap = new Map();
       const samplesSet = new Set(); // Set to hold unique sample values
 
@@ -100,7 +107,8 @@ onMounted(() => {
         dataMap.set(`${row.x},${row.y}`, row.sample_id);
         samplesSet.add(row.sample_id);
       }
-
+      
+      //extract unique values and sort them 
       uniqueSamples.value = Array.from(samplesSet).sort();
 
       // Determine the size of the 2D space.
@@ -117,7 +125,7 @@ onMounted(() => {
         const tableRow = [];
         for (let x = 1; x <= maxX; x++) {
           tableRow.push(dataMap.get(`${x},${y}`) || "");
-          console.log(dataMap.get(`${x},${y}`));
+          // console.log(dataMap.get(`${x},${y}`)); //debugging
         }
         tableRows.value.push(tableRow);
       }
